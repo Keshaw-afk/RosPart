@@ -1,2 +1,3 @@
 [console_scripts]
+lidar_compression_node = arena_perception_pkg.lidar_compression:main
 perception_node = arena_perception_pkg.perception_node:main
