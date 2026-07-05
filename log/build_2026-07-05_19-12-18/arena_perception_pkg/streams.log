@@ -1,0 +1,25 @@
+[2.103s] Invoking command in '/home/graduate/ros2_ws/build/arena_perception_pkg': DEBUGINFOD_URLS=https://debuginfod.fedoraproject.org/ PS1=📦[\u@ubuntu \W]$ PYTHONPATH=/home/graduate/ros2_ws/build/arena_perception_pkg/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/graduate/ros2_ws/install/arena_perception_pkg/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/graduate/ros2_ws/build/arena_perception_pkg/build --no-deps symlink_data
+[2.963s] running develop
+[3.397s] running egg_info
+[3.398s] creating arena_perception_pkg.egg-info
+[3.438s] writing arena_perception_pkg.egg-info/PKG-INFO
+[3.438s] writing dependency_links to arena_perception_pkg.egg-info/dependency_links.txt
+[3.439s] writing entry points to arena_perception_pkg.egg-info/entry_points.txt
+[3.439s] writing requirements to arena_perception_pkg.egg-info/requires.txt
+[3.439s] writing top-level names to arena_perception_pkg.egg-info/top_level.txt
+[3.440s] writing manifest file 'arena_perception_pkg.egg-info/SOURCES.txt'
+[3.524s] reading manifest file 'arena_perception_pkg.egg-info/SOURCES.txt'
+[3.526s] writing manifest file 'arena_perception_pkg.egg-info/SOURCES.txt'
+[3.567s] running build_ext
+[3.568s] Creating /home/graduate/ros2_ws/install/arena_perception_pkg/lib/python3.12/site-packages/arena-perception-pkg.egg-link (link to .)
+[3.570s] Installing camera_processing_node script to /home/graduate/ros2_ws/install/arena_perception_pkg/lib/arena_perception_pkg
+[3.570s] Installing lidar_processing_node script to /home/graduate/ros2_ws/install/arena_perception_pkg/lib/arena_perception_pkg
+[3.570s] 
+[3.570s] Installed /home/graduate/ros2_ws/build/arena_perception_pkg
+[3.571s] running symlink_data
+[3.571s] creating /home/graduate/ros2_ws/install/arena_perception_pkg/share/ament_index
+[3.571s] creating /home/graduate/ros2_ws/install/arena_perception_pkg/share/ament_index/resource_index
+[3.571s] creating /home/graduate/ros2_ws/install/arena_perception_pkg/share/ament_index/resource_index/packages
+[3.571s] symbolically linking /home/graduate/ros2_ws/build/arena_perception_pkg/resource/arena_perception_pkg -> /home/graduate/ros2_ws/install/arena_perception_pkg/share/ament_index/resource_index/packages
+[3.572s] symbolically linking /home/graduate/ros2_ws/build/arena_perception_pkg/package.xml -> /home/graduate/ros2_ws/install/arena_perception_pkg/share/arena_perception_pkg
+[3.680s] Invoked command in '/home/graduate/ros2_ws/build/arena_perception_pkg' returned '0': DEBUGINFOD_URLS=https://debuginfod.fedoraproject.org/ PS1=📦[\u@ubuntu \W]$ PYTHONPATH=/home/graduate/ros2_ws/build/arena_perception_pkg/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/graduate/ros2_ws/install/arena_perception_pkg/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/graduate/ros2_ws/build/arena_perception_pkg/build --no-deps symlink_data

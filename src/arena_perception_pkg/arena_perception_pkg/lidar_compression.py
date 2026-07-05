@@ -2,76 +2,81 @@ import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import LaserScan
 import numpy as np
+from functools import partial
 
 
 class LidarCompressionNode(Node):
     def __init__(self):
         super().__init__('lidar_compression_node')
 
-        # Subscribe to the raw 16x640 Gazebo LiDAR
-        self.scan_sub = self.create_subscription(
-            LaserScan,
-            '/robot_1/lidar/points',  # Change this to match your actual raw topic name
-            self.scan_callback,
-            10
-        )
-
-        # Publish the downsampled 1x64 2D LiDAR for PyTorch
-        self.scan_pub = self.create_publisher(
-            LaserScan,
-            '/robot_1/lidar_scan_processed',
-            10
-        )
-
         # RL Downsampling Configuration
         self.original_horizontal_rays = 640
         self.vertical_channels = 16
         self.target_resolution = 64
 
-        self.get_logger().info("LiDAR Compression Node Initialized.")
+        # Dictionaries to hold our dynamic subscribers and publishers
+        self.scan_subs = {}
+        self.scan_pubs = {}
 
-    def scan_callback(self, msg):
-        # 1. Convert the tuple of ranges into a NumPy array
+        # Loop through robots 1 to 4 and set up their specific topics
+        for i in range(1, 5):
+            robot_name = f'robot_{i}'
+            sub_topic = f'/{robot_name}/lidar/scan'
+            pub_topic = f'/{robot_name}/scan_compressed'
+
+            # Create a publisher for this specific robot
+            self.scan_pubs[robot_name] = self.create_publisher(
+                LaserScan,
+                pub_topic,
+                10
+            )
+
+            # Create a subscriber for this specific robot
+            # Using partial() allows us to pass the 'robot_name' into the callback
+            # so the callback knows which publisher to route the processed data to.
+            self.scan_subs[robot_name] = self.create_subscription(
+                LaserScan,
+                sub_topic,
+                partial(self.scan_callback, robot_name=robot_name),
+                10
+            )
+
+            self.get_logger().info(
+                f"Initialized compression pipeline for {robot_name}")
+
+    def scan_callback(self, msg, robot_name):
+        # 1. Convert the tuple of ranges into a NumPy array (now it's already a 1D array of 640 elements)
         ranges = np.array(msg.ranges, dtype=np.float32)
 
-        expected_size = self.original_horizontal_rays * self.vertical_channels
-
-        # Guard clause: ensure the array matches the expected 16x640 shape
-        if ranges.size != expected_size:
-            self.get_logger().warning(f"Unexpected scan size: {ranges.size}. Expected {
-                expected_size}.", throttle_duration_sec=2.0)
+        # Guard clause: Update the expected size to match the 640 horizontal rays
+        if ranges.size != self.original_horizontal_rays:
+            self.get_logger().warning(
+                f"[{robot_name}] Unexpected scan size: {
+                    ranges.size}. Expected {self.original_horizontal_rays}.",
+                throttle_duration_sec=2.0
+            )
             return
 
-        # 2. Reshape into (16 vertical channels, 640 horizontal rays)
-        matrix = ranges.reshape(
-            (self.vertical_channels, self.original_horizontal_rays))
-
-        # 3. Vertical Compression: Find the closest obstacle in each vertical slice
-        # This collapses the 16 channels down to a single 1D array of 640 rays
-        compressed_ranges = np.min(matrix, axis=0)
-
-        # 4. Horizontal Downsampling for RL (Max Pooling)
+        # 2. Horizontal Downsampling for RL (Max Pooling)
         # We group the 640 rays into 64 windows of 10 rays each.
         window_size = self.original_horizontal_rays // self.target_resolution
 
         # Reshape to (64, 10) and take the minimum distance in each window
         # so we never miss corners or thin obstacles.
-        downsampled_ranges = np.min(
-            compressed_ranges.reshape(-1, window_size), axis=1)
+        downsampled_ranges = np.min(ranges.reshape(-1, window_size), axis=1)
 
-        # 5. RL Sanitization: Handle Inf and NaN values
-        # Neural networks fail if fed infinite values. Cap them to the max range.
+        # 3. RL Sanitization: Handle Inf and NaN values
         downsampled_ranges = np.nan_to_num(
             downsampled_ranges,
             posinf=msg.range_max,
             neginf=msg.range_min
         )
 
-        # 6. Construct the new 2D LaserScan message
+        # 4. Construct the new 2D LaserScan message
         compressed_msg = LaserScan()
         compressed_msg.header = msg.header
 
-        # Copy physics parameters, but update the angle increment for the new resolution
+        # Copy physics parameters, updating the angle increment for the new resolution
         compressed_msg.angle_min = msg.angle_min
         compressed_msg.angle_max = msg.angle_max
         compressed_msg.angle_increment = (
@@ -82,13 +87,10 @@ class LidarCompressionNode(Node):
         compressed_msg.range_min = msg.range_min
         compressed_msg.range_max = msg.range_max
 
-        # Convert the NumPy array back to a standard Python list
         compressed_msg.ranges = downsampled_ranges.tolist()
 
-        # Note: If you also need intensity data for RL, you can apply the exact
-        # same max-pooling logic to msg.intensities here.
-
-        self.scan_pub.publish(compressed_msg)
+        # 5. Publish to the specific robot's compressed topic
+        self.scan_pubs[robot_name].publish(compressed_msg)
 
 
 def main(args=None):

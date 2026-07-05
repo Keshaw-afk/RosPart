@@ -24,8 +24,8 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'perception_node = arena_perception_pkg.perception_node:main',
-            'lidar_compression_node = arena_perception_pkg.lidar_compression:main'
+            'camera_processing_node = arena_perception_pkg.perception_node:main',
+            'lidar_processing_node = arena_perception_pkg.lidar_compression:main'
         ],
     },
 )
