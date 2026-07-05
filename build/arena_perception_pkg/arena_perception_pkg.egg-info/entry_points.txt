@@ -1,0 +1,2 @@
+[console_scripts]
+perception_node = arena_perception_pkg.perception_node:main
