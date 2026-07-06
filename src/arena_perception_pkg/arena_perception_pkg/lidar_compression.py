@@ -22,7 +22,7 @@ class LidarCompressionNode(Node):
         for i in range(1, 5):
             robot_name = f'robot_{i}'
             sub_topic = f'/{robot_name}/lidar/scan'
-            pub_topic = f'/{robot_name}/scan_compressed'
+            pub_topic = f'arena/{robot_name}/scan_compressed'
 
             # Create a publisher for this specific robot
             self.scan_pubs[robot_name] = self.create_publisher(
