@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# ROS 2 build artifacts (if built from package root)
+build/
+install/
+log/
+
+# pytest
+.pytest_cache/
+
+# Coverage
+.coverage
+coverage.xml
+htmlcov/
+
+# mypy
+.mypy_cache/
+
+# IDEs
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.swp
+*.swo
+*~
+
+# Colcon metadata
+.colcon/
+
+# Python packaging
+*.egg-info/
+dist/

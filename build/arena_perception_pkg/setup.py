@@ -1,1 +1,0 @@
-/home/graduate/ros2_ws/src/arena_perception_pkg/setup.py
