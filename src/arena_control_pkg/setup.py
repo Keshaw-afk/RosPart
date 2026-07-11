@@ -24,9 +24,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'deterministic_planner = arena_control_pkg.deterministic_planner:main',
-            'multi_robot_deterministic_planner = arena_control_pkg.multi_robot_deterministic_planner:main',
-            'even_better_deterministic_planner = arena_control_pkg.even_better_deterministic_planner:main'
+            'det_node = arena_control_pkg.det_node:main',
         ],
     },
 )
